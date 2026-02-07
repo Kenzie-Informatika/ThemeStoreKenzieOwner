@@ -1,0 +1,83 @@
+/* Dasar Halaman */
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Wadah Formulir */
+.container {
+    background-color: #121212;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+    color: #7b61ff;
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+/* Gaya Input & Textarea */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #ccc;
+    box-sizing: border-box; /* Agar padding tidak merusak lebar */
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #7b61ff;
+}
+
+/* Bagian Unggah File */
+.file-upload {
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.file-upload label {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Tombol Publikasikan */
+.btn-publish {
+    width: 100%;
+    padding: 12px;
+    background-color: #7b61ff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.btn-publish:hover {
+    background-color: #6a4dff;
+}
