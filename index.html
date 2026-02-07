@@ -3,147 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kenzie Owner | Ultimate Manager</title>
+    <title>RLOY | Admin Central PT BKI</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6366f1; }
-        .active-menu { background: rgba(99, 102, 241, 0.15); color: var(--p) !important; border-right: 4px solid var(--p); }
-        body { transition: 0.3s ease; }
-        .page-anim { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
+        .input-premium { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 16px; border-radius: 12px; width: 100%; color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        .input-premium:focus { border-color: #fe2c55; }
+        .btn-bki { background: #fff; color: #000; padding: 16px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; cursor: pointer; border: none; }
+        .btn-bki:hover { background: #fe2c55; color: #fff; transform: translateY(-2px); }
+        .hidden { display: none !important; }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
     </style>
 </head>
-<body id="mainBody" class="bg-[#0f172a] text-slate-200 flex h-screen overflow-hidden">
+<body class="p-6">
 
-    <aside id="sidebar" class="w-72 border-r border-slate-800 flex flex-col py-8 bg-[#0f172a]">
-        <div class="px-8 mb-10">
-            <h1 class="font-black text-xl tracking-tight">OWNER<span class="text-indigo-500">CONTROL</span></h1>
-            <a href="index.html" class="text-[10px] text-indigo-400 font-bold hover:underline cursor-pointer"><i class="ri-external-link-line"></i> LIHAT WEB STORE</a>
+    <section id="login-page" class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-sm glass p-10 text-center shadow-2xl">
+            <h1 class="text-4xl font-black italic mb-2 tracking-tighter">RLOY.</h1>
+            <p class="text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-10">PT Bangga Karya Indonesia</p>
+            
+            <input type="text" id="user-in" placeholder="Username" class="input-premium">
+            <input type="password" id="pass-in" placeholder="Password" class="input-premium">
+            <button onclick="checkAdmin()" class="btn-bki">LOGIN ADMIN</button>
+        </div>
+    </section>
+
+    <section id="admin-page" class="hidden max-w-6xl mx-auto pt-20 pb-20">
+        <div class="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
+            <div>
+                <h2 class="text-5xl font-black italic tracking-tighter text-red-600">MASTER CONSOLE</h2>
+                <p class="text-gray-400 text-xs mt-2 uppercase tracking-widest">Project: <span class="text-white">miningtransaction</span></p>
+            </div>
+            <button onclick="logout()" class="text-xs font-bold text-red-500 bg-red-500/10 px-6 py-3 rounded-xl border border-red-500/20 hover:bg-red-600 hover:text-white transition">SIGNOUT</button>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2">
-            <button onclick="navTo('upload', this)" class="menu-btn active-menu w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 font-bold transition-all">
-                <i class="ri-add-circle-line text-xl"></i> Tambah Proyek
-            </button>
-            <button onclick="navTo('list', this)" class="menu-btn w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 font-bold transition-all">
-                <i class="ri-folder-open-line text-xl"></i> List Proyek Kita
-            </button>
-        </nav>
+        <div class="grid lg:grid-cols-12 gap-10">
+            <div class="lg:col-span-5">
+                <div class="glass p-8 sticky top-10">
+                    <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Deploy New Infrastructure</h3>
+                    <input type="text" id="web-slug" placeholder="slug-nama-web" class="input-premium">
+                    <textarea id="web-html" placeholder="<html> ... </html>" class="input-premium h-80 font-mono text-[11px]"></textarea>
+                    <button onclick="pushDeploy()" id="btn-publish" class="btn-bki">PUBLISH WEBSITE 🚀</button>
+                </div>
+            </div>
 
-        <div class="px-8 mt-auto">
-            <div class="p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
-                <p class="text-[10px] font-black text-slate-500 uppercase">User Aktif</p>
-                <p class="text-sm font-bold">Kenzie Developer</p>
+            <div class="lg:col-span-7">
+                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Live Deployment List</h3>
+                <div id="master-list" class="space-y-4"></div>
             </div>
         </div>
-    </aside>
+    </section>
 
-    <main class="flex-1 flex flex-col">
-        <header class="h-20 border-b border-slate-800 flex items-center justify-between px-10">
-            <h2 id="headerTitle" class="text-lg font-bold">Tambah Proyek Baru</h2>
-        </header>
+<script>
+    // CONFIG BARU PT BKI (MININGTRANSACTION)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAhN_BxC9c76kB2jzTJ05F0NXX9ZjRYqQ",
+      authDomain: "themestorekenzie.firebaseapp.com",
+      databaseURL: "https://themestorekenzie-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "themestorekenzie",
+      storageBucket: "themestorekenzie.firebasestorage.app",
+      messagingSenderId: "220524638997",
+      appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
+      measurementId: "G-WTR3T92KWS"
+    };
 
-        <div class="flex-1 overflow-y-auto p-10">
-            <section id="section-upload" class="page-anim space-y-8">
-                <div class="bg-slate-800/40 p-10 rounded-[2.5rem] border border-slate-700 max-w-2xl mx-auto shadow-2xl">
-                    <div class="space-y-6">
-                        <input type="text" id="itemName" placeholder="Nama..." class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-700 outline-none focus:ring-2 ring-indigo-500 text-white">
-                        <input type="file" id="fileInput" class="hidden" onchange="fileSelected()">
-                        <label for="fileInput" class="cursor-pointer border-2 border-dashed border-slate-700 rounded-3xl p-10 flex flex-col items-center justify-center hover:border-indigo-500 transition">
-                            <i class="ri-upload-cloud-2-line text-5xl text-slate-600 mb-2"></i>
-                            <span id="fileStatus" class="text-sm font-bold text-slate-500 uppercase">Pilih File Project</span>
-                        </label>
-                        <select id="itemCat" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-700 outline-none text-white">
-                            <option value="wallpaper">Wallpaper HD</option>
-                            <option value="theme">Widget / Theme</option>
-                        </select>
-                        <div id="progBarCont" class="hidden bg-slate-900 h-2 rounded-full overflow-hidden">
-                            <div id="progBar" class="bg-indigo-500 h-full w-0 transition-all"></div>
-                        </div>
-                        <button onclick="doUpload()" id="btnUp" class="w-full bg-indigo-600 py-4 rounded-2xl font-black text-white hover:bg-indigo-500 transition">UPLOAD SEKARANG</button>
-                    </div>
-                </div>
-            </section>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-            <section id="section-list" class="page-anim hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                </section>
-        </div>
-    </main>
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "2013GG";
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    // Auto Login Check sesuai instruksi [2026-01-23]
+    let isLogged = localStorage.getItem('rloy_admin_session') === 'true';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDAhN_BxC9c76kB2jzTJ05F0NXX9ZjRYqQ",
-            authDomain: "themestorekenzie.firebaseapp.com",
-            projectId: "themestorekenzie",
-            storageBucket: "themestorekenzie.firebasestorage.app",
-            messagingSenderId: "220524638997",
-            appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
-            measurementId: "G-WTR3T92KWS"
-        };
+    window.onload = () => {
+        const hash = window.location.hash.substring(1);
+        if(hash) return serve(hash);
+        if(isLogged) showDashboard();
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
+    function checkAdmin() {
+        const u = document.getElementById('user-in').value;
+        const p = document.getElementById('pass-in').value;
 
-        window.navTo = (page, btn) => {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById('section-' + page).classList.remove('hidden');
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-menu'));
-            btn.classList.add('active-menu');
-        };
+        if(u === ADMIN_USER && p === ADMIN_PASS) {
+            localStorage.setItem('rloy_admin_session', 'true');
+            showDashboard();
+        } else {
+            alert("Akses Ditolak! Kredensial Salah.");
+        }
+    }
 
-        window.fileSelected = () => {
-            const f = document.getElementById('fileInput').files[0];
-            if(f) document.getElementById('fileStatus').innerText = f.name;
-        };
+    function showDashboard() {
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('admin-page').classList.remove('hidden');
+        loadAllProjects();
+    }
 
-        window.doUpload = async () => {
-            const name = document.getElementById('itemName').value;
-            const file = document.getElementById('fileInput').files[0];
-            const cat = document.getElementById('itemCat').value;
-            if(!name || !file) return alert("Lengkapi data!");
+    function pushDeploy() {
+        const slug = document.getElementById('web-slug').value.trim().toLowerCase().replace(/\s+/g, '-');
+        const code = document.getElementById('web-html').value;
+        const btn = document.getElementById('btn-publish');
 
-            document.getElementById('progBarCont').classList.remove('hidden');
-            const sRef = ref(storage, 'projects/' + Date.now() + "_" + file.name);
-            const task = uploadBytesResumable(sRef, file);
+        if(!slug || !code) return alert("Slug dan Kode HTML wajib diisi!");
 
-            task.on('state_changed', 
-                (s) => { document.getElementById('progBar').style.width = (s.bytesTransferred / s.totalBytes) * 100 + '%'; },
-                (e) => alert(e.message),
-                () => {
-                    getDownloadURL(task.snapshot.ref).then(async (url) => {
-                        await addDoc(collection(db, "assets"), { title: name, url: url, type: cat, path: sRef.fullPath, createdAt: Date.now() });
-                        alert("Berhasil!"); location.reload();
-                    });
-                }
-            );
-        };
+        btn.innerText = "UPLOADING...";
+        btn.disabled = true;
 
-        onSnapshot(query(collection(db, "assets"), orderBy("createdAt", "desc")), (snap) => {
-            const list = document.getElementById('section-list');
-            list.innerHTML = '';
-            snap.forEach(d => {
-                const item = d.data();
+        db.ref('sites/' + slug).set({
+            content: code,
+            owner: 'admin',
+            time: new Date().toLocaleString()
+        }).then(() => {
+            alert("Website " + slug + " berhasil dipublikasikan!");
+            document.getElementById('web-slug').value = "";
+            document.getElementById('web-html').value = "";
+            btn.innerText = "PUBLISH WEBSITE 🚀";
+            btn.disabled = false;
+        }).catch(err => {
+            alert("Error: Pastikan Realtime Database Rules sudah diset ke Public (true).");
+            console.error(err);
+            btn.innerText = "PUBLISH WEBSITE 🚀";
+            btn.disabled = false;
+        });
+    }
+
+    function loadAllProjects() {
+        db.ref('sites').on('value', s => {
+            const list = document.getElementById('master-list');
+            list.innerHTML = "";
+            if(!s.exists()) {
+                list.innerHTML = "<div class='glass p-10 text-center text-gray-600 italic'>Database Kosong.</div>";
+                return;
+            }
+            s.forEach(child => {
+                const d = child.val();
                 list.innerHTML += `
-                    <div class="bg-slate-800/50 rounded-3xl p-5 border border-slate-700">
-                        <img src="${item.url}" class="w-full h-32 object-cover rounded-xl mb-3">
-                        <p class="font-bold text-sm truncate">${item.title}</p>
-                        <button onclick="hapus('${d.id}', '${item.path}')" class="w-full mt-3 py-2 bg-red-500/10 text-red-500 rounded-lg text-xs font-bold">HAPUS</button>
+                    <div class="glass p-6 flex justify-between items-center hover:bg-white/5 transition group">
+                        <div>
+                            <h4 class="text-2xl font-black italic tracking-tighter group-hover:text-red-500 transition">/${child.key}</h4>
+                            <p class="text-[9px] text-gray-600 uppercase font-bold mt-1">Deployed: ${d.time}</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <a href="#${child.key}" target="_blank" class="text-[10px] font-black text-blue-500 border border-blue-500/20 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition">VIEW</a>
+                            <button onclick="delSite('${child.key}')" class="text-[10px] font-black text-red-800 border border-red-800/20 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition">DELETE</button>
+                        </div>
                     </div>`;
             });
         });
+    }
 
-        window.hapus = async (id, path) => {
-            if(confirm("Hapus?")) {
-                await deleteDoc(doc(db, "assets", id));
-                try { await deleteObject(ref(storage, path)); } catch(e) {}
+    function delSite(k) { if(confirm("Hapus data ini selamanya?")) db.ref('sites/'+k).remove(); }
+    
+    function logout() { 
+        localStorage.removeItem('rloy_admin_session'); 
+        location.reload(); 
+    }
+
+    function serve(h) {
+        db.ref('sites/'+h).once('value', s => {
+            if(s.exists()) {
+                document.open(); 
+                document.write(s.val().content); 
+                document.close();
+            } else {
+                window.location.hash = "";
+                location.reload();
             }
-        };
-    </script>
+        });
+    }
+</script>
 </body>
 </html>
