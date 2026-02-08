@@ -3,198 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RLOY | ADMIN PANEL PT BKI</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Kenzie Store | Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;900&display=swap');
-        
-        body { 
-            background-color: #1a1a2e; 
-            background-image: radial-gradient(#2d1b4e 1px, transparent 1px);
-            background-size: 20px 20px;
-            color: #000; 
-            font-family: 'Public Sans', sans-serif; 
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-dark: #121212;
+            --input-bg: #000000;
+            --accent: #ffffff;
+            --danger: #ff4d4d;
+            --border: #222222;
         }
 
-        /* Gaya Neo-Brutalism (Mirip Foto) */
-        .neo-box { 
-            background: #fff; 
-            border: 4px solid #000; 
-            box-shadow: 8px 8px 0px #000; 
-            transition: 0.2s;
-        }
-        .neo-box:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px #000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-        .neo-btn { 
-            background: #facc15; 
-            border: 4px solid #000; 
-            box-shadow: 4px 4px 0px #000; 
-            font-weight: 900; 
-            cursor: pointer;
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .neo-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
 
-        .neo-input {
+        /* --- CONTAINER UTAMA --- */
+        .admin-card {
+            background-color: var(--card-dark);
             width: 100%;
-            padding: 15px;
-            border: 4px solid #000;
-            background: #f8f9fa;
-            font-weight: 900;
-            outline: none;
+            max-width: 550px;
+            border-radius: 25px;
+            padding: 35px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
         }
 
-        .hidden { display: none !important; }
-        
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #000; }
+        .admin-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 900;
+        }
+
+        /* --- FORM INPUT --- */
+        .form-group { margin-bottom: 15px; }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: #444; }
+
+        textarea { height: 120px; resize: none; }
+
+        /* Custom File Input */
+        .file-input-wrapper {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] { border: none; padding: 0; background: transparent; }
+
+        /* --- BUTTON PUBLISH --- */
+        .btn-publish {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--accent);
+            color: black;
+            border: none;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-publish:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        /* --- SECTION ACTIVE THEMES --- */
+        .active-section {
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .active-section h3 {
+            font-size: 0.8rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .theme-item {
+            background-color: var(--card-dark);
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .theme-info { display: flex; align-items: center; gap: 15px; }
+
+        .theme-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid #333;
+        }
+
+        .theme-text h4 { font-size: 1rem; margin-bottom: 2px; }
+        .theme-text p { font-size: 0.7rem; color: #666; }
+
+        /* --- BUTTON REMOVE --- */
+        .btn-remove {
+            background-color: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-remove:hover { background-color: var(--danger); color: white; }
+
+        /* Loading Overlay */
+        #loading { display: none; margin-top: 10px; color: #888; font-size: 0.8rem; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body>
 
-    <section id="login-page" class="min-h-screen flex items-center justify-center">
-        <div class="neo-box p-10 max-w-sm w-full bg-white text-center">
-            <div class="bg-blue-600 inline-block p-4 border-4 border-black mb-4">
-                <h1 class="text-4xl text-white font-black italic">BKI</h1>
-            </div>
-            <h2 class="text-2xl font-black mb-8 uppercase tracking-tighter">Admin Access</h2>
-            <input type="text" id="u-in" placeholder="USERNAME" class="neo-input mb-4">
-            <input type="password" id="p-in" placeholder="PASSWORD" class="neo-input mb-8">
-            <button onclick="checkAuth()" class="neo-btn w-full py-4 text-xl">LOGIN →</button>
+    <div class="admin-card">
+        <h2>Update Content</h2>
+        
+        <div class="form-group">
+            <input type="text" id="title" placeholder="Theme Title">
         </div>
-    </section>
-
-    <section id="admin-page" class="hidden max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <div>
-                <h1 class="text-4xl font-black text-white italic tracking-tighter">HELLO, BOSS!</h1>
-                <div class="flex items-center gap-2 mt-2">
-                    <div id="status-color" class="status-dot bg-red-500"></div>
-                    <span id="status-text" class="text-white font-black text-xs uppercase italic">OFFLINE</span>
-                </div>
-            </div>
-            <button onclick="logout()" class="neo-btn bg-red-500 text-white px-6 py-2">LOGOUT</button>
-        </header>
-
-        <div class="neo-box p-8 bg-white mb-10">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-black"></div>
-                <h3 class="font-black text-xl uppercase italic">New Deployment</h3>
-            </div>
-            <input type="text" id="web-slug" placeholder="project-name-here" class="neo-input mb-4">
-            <textarea id="web-html" placeholder="Your code goes here..." class="neo-input h-48 font-mono text-sm mb-6"></textarea>
-            <button onclick="publish()" id="btn-pub" class="neo-btn bg-cyan-400 w-full py-4 text-xl uppercase italic">Launch Project ✨</button>
+        <div class="form-group">
+            <input type="text" id="designer" placeholder="Designer Name">
+        </div>
+        <div class="form-group">
+            <input type="text" id="size" placeholder="File Size (ex: 4.5 MB)">
+        </div>
+        <div class="form-group">
+            <input type="text" id="link" placeholder="Direct Download Link">
+        </div>
+        <div class="form-group">
+            <textarea id="desc" placeholder="Write something about this theme..."></textarea>
         </div>
 
-        <div class="neo-box p-8 bg-white mb-10">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-4 h-4 rounded-full bg-green-500 border-2 border-black"></div>
-                <h3 class="font-black text-xl uppercase italic">Project Saya</h3>
-            </div>
-            <div id="master-list" class="space-y-4"></div>
+        <div class="file-input-wrapper">
+            <input type="file" id="imageInput" accept="image/*">
         </div>
-    </section>
 
-<script>
-    // CONFIG SINGAPORE
-    const firebaseConfig = {
-       apiKey: "AIzaSyBFo47gOFvQvpwIj7mrie63uVttJTIBoz4",
-       authDomain: "kloy-b0ed5.firebaseapp.com",
-       projectId: "kloy-b0ed5",
-       storageBucket: "kloy-b0ed5.firebasestorage.app",
-       messagingSenderId: "891008728926",
-       appId: "1:891008728926:web:2dbe8ef4aac9a360be59cf"
-      };
+        <button class="btn-publish" onclick="uploadData()">Publish Changes</button>
+        <p id="loading">Sabar ya, lagi diproses...</p>
+    </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    <div class="active-section">
+        <h3>Active Themes</h3>
+        <div id="themeList">
+            <p style="text-align: center; color: #333; margin-top: 20px;">Memuat data...</p>
+        </div>
+    </div>
 
-    // Koneksi Monitor
-    db.ref(".info/connected").on("value", (snap) => {
-        const dot = document.getElementById('status-color');
-        const txt = document.getElementById('status-text');
-        if (snap.val()) {
-            dot.className = "status-dot bg-green-500";
-            txt.innerText = "ONLINE (SINGAPORE)";
-        } else {
-            dot.className = "status-dot bg-red-500";
-            txt.innerText = "DISCONNECTED";
-        }
-    });
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    const ADM = "Admin", PAS = "Kenziepro";
+    <script>
+        // --- KONFIGURASI FIREBASE ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDAhN_BxC9c76kB2jzTJ05F0NXX9ZjRYqQ",
+          authDomain: "themestorekenzie.firebaseapp.com",
+          databaseURL: "https://themestorekenzie-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "themestorekenzie",
+          storageBucket: "themestorekenzie.firebasestorage.app",
+          messagingSenderId: "220524638997",
+          appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
+          measurementId: "G-WTR3T92KWS"
+         };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-    window.onload = () => {
-        const h = window.location.hash.substring(1);
-        if(h) return serve(h);
-        if(localStorage.getItem('bki_session') === 'active') showDash();
-    };
+        // --- FUNGSI UPLOAD DATA ---
+        function uploadData() {
+            const title = document.getElementById('title').value;
+            const designer = document.getElementById('designer').value;
+            const size = document.getElementById('size').value;
+            const link = document.getElementById('link').value;
+            const desc = document.getElementById('desc').value;
+            const fileInput = document.getElementById('imageInput');
+            const loading = document.getElementById('loading');
 
-    function checkAuth() {
-        if(document.getElementById('u-in').value === ADM && document.getElementById('p-in').value === PAS) {
-            localStorage.setItem('bki_session', 'active');
-            showDash();
-        } else { alert("SALAH, BOSS!"); }
-    }
+            if (!title || !designer || !link) {
+                alert("Waduh Kenzie, Judul, Designer, sama Link jangan dikosongin ya!");
+                return;
+            }
 
-    function showDash() {
-        document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('admin-page').classList.remove('hidden');
-        loadData();
-    }
+            loading.style.display = "block";
 
-    function publish() {
-        const s = document.getElementById('web-slug').value.trim().toLowerCase().replace(/\s+/g, '-');
-        const c = document.getElementById('web-html').value;
-        if(!s || !c) return alert("ISI DULU!");
+            // Karena kita fokus ke dashboard, kita pakai placeholder gambar jika tidak upload file
+            // Kamu bisa tambahkan Firebase Storage jika ingin upload file beneran
+            const imageUrl = fileInput.files[0] ? URL.createObjectURL(fileInput.files[0]) : "https://via.placeholder.com/150";
 
-        db.ref('sites/' + s).set({
-            content: c,
-            views: 0,
-            time: new Date().toLocaleString()
-        }).then(() => {
-            alert("BERHASIL DEPLOY!");
-            document.getElementById('web-slug').value = "";
-            document.getElementById('web-html').value = "";
-        });
-    }
-
-    function loadData() {
-        db.ref('sites').on('value', snap => {
-            const list = document.getElementById('master-list');
-            list.innerHTML = "";
-            if(!snap.exists()) return list.innerHTML = "Belum ada project.";
-
-            snap.forEach(item => {
-                const d = item.val();
-                list.innerHTML += `
-                    <div class="border-4 border-black p-4 flex justify-between items-center bg-gray-50 shadow-[4px_4px_0px_#000]">
-                        <div>
-                            <h4 class="font-black text-lg italic">/${item.key}</h4>
-                            <span class="bg-yellow-300 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase">
-                               👁️ ${d.views || 0} Pengunjung
-                            </span>
-                        </div>
-                        <div class="flex gap-2">
-                            <a href="#${item.key}" target="_blank" class="neo-btn bg-blue-500 text-white px-4 py-1 text-xs uppercase">View</a>
-                            <button onclick="del('${item.key}')" class="text-red-600 font-black text-xs uppercase">Hapus</button>
-                        </div>
-                    </div>`;
+            const newPostRef = database.ref('products').push();
+            newPostRef.set({
+                title: title,
+                designer: designer,
+                size: size,
+                url: imageUrl, // Ganti dengan URL Storage jika sudah siap
+                link: link,
+                desc: desc,
+                type: 'theme' // Default type
+            }).then(() => {
+                loading.style.display = "none";
+                alert("Mantap! Content Berhasil Di-update!");
+                location.reload(); // Refresh biar form kosong lagi
             });
-        });
-    }
+        }
 
-    function del(k) { if(confirm("HAPUS?")) db.ref('sites/'+k).remove(); }
-    function logout() { localStorage.clear(); location.reload(); }
+        // --- FUNGSI TAMPILKAN DATA (100% MIRIP LIST) ---
+        function loadThemes() {
+            const themeList = document.getElementById('themeList');
+            database.ref('products').on('value', (snapshot) => {
+                themeList.innerHTML = '';
+                const data = snapshot.val();
+                
+                if (data) {
+                    Object.keys(data).forEach(id => {
+                        const item = data[id];
+                        const div = document.createElement('div');
+                        div.className = 'theme-item';
+                        div.innerHTML = `
+                            <div class="theme-info">
+                                <img src="${item.url}" alt="thumb">
+                                <div class="theme-text">
+                                    <h4>${item.title}</h4>
+                                    <p>${item.designer}</p>
+                                </div>
+                            </div>
+                            <button class="btn-remove" onclick="removeData('${id}')">Remove</button>
+                        `;
+                        themeList.appendChild(div);
+                    });
+                } else {
+                    themeList.innerHTML = '<p style="text-align:center; color:#333;">Belum ada tema aktif.</p>';
+                }
+            });
+        }
 
-    function serve(h) {
-        db.ref('sites/'+h).once('value', s => {
-            if(s.exists()) {
-                db.ref('sites/'+h+'/views').transaction(v => (v || 0) + 1);
-                document.open(); document.write(s.val().content); document.close();
-            } else { location.hash = ""; location.reload(); }
-        });
-    }
-</script>
+        // --- FUNGSI HAPUS DATA ---
+        function removeData(id) {
+            if (confirm("Serius mau dihapus, Kenzie?")) {
+                database.ref('products/' + id).remove().then(() => {
+                    alert("Terhapus!");
+                });
+            }
+        }
+
+        // Jalankan saat load
+        loadThemes();
+    </script>
 </body>
 </html>
