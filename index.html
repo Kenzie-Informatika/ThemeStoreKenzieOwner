@@ -201,9 +201,13 @@
           messagingSenderId: "220524638997",
           appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
           measurementId: "G-WTR3T92KWS"
-         };
+         }; 
+         
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
 
         // --- FUNGSI UPLOAD DATA ---
         function uploadData() {
