@@ -193,18 +193,17 @@
     <script>
         // --- KONFIGURASI FIREBASE ---
         const firebaseConfig = {
-          apiKey: "AIzaSyDAhN_BxC9c76kB2jzTJ05F0NXX9ZjRYqQ",
-          authDomain: "themestorekenzie.firebaseapp.com",
-          databaseURL: "https://themestorekenzie-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "themestorekenzie",
-          storageBucket: "themestorekenzie.firebasestorage.app",
-          messagingSenderId: "220524638997",
-          appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
-          measurementId: "G-WTR3T92KWS"
-         }; 
-
-        import { initializeApp } from "firebase/app";
-        import { getAnalytics } from "firebase/analytics";
+           apiKey: "AIzaSyDAhN_BxC9c76kB2jzTJ05F0NXX9ZjRYqQ",
+           authDomain: "themestorekenzie.firebaseapp.com",
+           databaseURL: "https://themestorekenzie-default-rtdb.asia-southeast1.firebasedatabase.app",
+           projectId: "themestorekenzie",
+           storageBucket: "themestorekenzie.firebasestorage.app",
+           messagingSenderId: "220524638997",
+           appId: "1:220524638997:web:a7d4860fb6d2b179a9af1c",
+           measurementId: "G-WTR3T92KWS"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
         // --- FUNGSI UPLOAD DATA ---
         function uploadData() {
